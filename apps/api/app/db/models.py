@@ -3,7 +3,13 @@ from datetime import datetime
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
-    Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, Text, func,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Text,
+    func,
 )
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -22,17 +28,13 @@ class User(Base):
     email: Mapped[str] = mapped_column(CITEXT, unique=True)
     password_hash: Mapped[str] = mapped_column(Text)
     full_name: Mapped[str | None] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class Resume(Base):
     __tablename__ = "resumes"
     __table_args__ = (
-        CheckConstraint(
-            "status IN ('processing','review','embedded','failed')", name="status"
-        ),
+        CheckConstraint("status IN ('processing','review','embedded','failed')", name="status"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -44,9 +46,7 @@ class Resume(Base):
     file_key: Mapped[str] = mapped_column(Text)
     status: Mapped[str] = mapped_column(Text, server_default="processing")
     is_active: Mapped[bool] = mapped_column(Boolean, server_default="true")
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class ResumeChunk(Base):
@@ -72,9 +72,7 @@ class ResumeChunk(Base):
     page_number: Mapped[int | None] = mapped_column(Integer)
     chunk_index: Mapped[int] = mapped_column(Integer)
     meta: Mapped[dict] = mapped_column("metadata", JSONB, server_default="{}")
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class ChunkEmbedding(Base):
@@ -85,6 +83,4 @@ class ChunkEmbedding(Base):
     )
     model: Mapped[str] = mapped_column(Text, primary_key=True)
     embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
